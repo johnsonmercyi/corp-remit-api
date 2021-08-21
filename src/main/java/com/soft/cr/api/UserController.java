@@ -1,5 +1,6 @@
 package com.soft.cr.api;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import com.soft.cr.model.User;
@@ -7,6 +8,7 @@ import com.soft.cr.service.UserService;
 import com.soft.cr.util.CustomMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -62,15 +64,18 @@ public class UserController {
         Object response = null;
 		
 		try {
-			response = service.read();
+			response = service.read(id);
 		}catch (Exception ex) {
+            System.out.println(ex.getClass());
 			System.out.println(ex.getClass());
 			
-			// if (ex instanceof CannotGetJdbcConnectionException) {
-			// 	response = new CustomMessage(true, "Server Error", "Database Connection Lost", "The Service(s) required by your SQL Database Server to run might not have been started.");
-			// } else {
-			// 	response = new CustomMessage(true, "Server Error", ex.getClass().getSimpleName(), "Not yet resolved!");
-			// }
+			if (ex instanceof CannotGetJdbcConnectionException) {
+				response = new CustomMessage(true, "Server Error", "Database Connection Lost", "The Service(s) required by your SQL Database Server to run might not have been started.");
+			} if (ex instanceof EmptyResultDataAccessException) {
+				response = new CustomMessage(true, "Invalid User", "User Credential is Invalid", "");
+			} else {
+				response = new CustomMessage(true, "Server Error", ex.getClass().getSimpleName(), "Not yet resolved!");
+			}
 			
 		}
 		return response;

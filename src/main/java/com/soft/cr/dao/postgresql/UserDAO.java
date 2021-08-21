@@ -35,54 +35,52 @@ public class UserDAO implements DataAccessModel {
 
         return jdbcTemplate.query(sql, (rs, i) -> {
 
-            
+            LocalDateTime lastLogin = rs.getString("last_login") != null ? LocalDateTime.parse(
+                    rs.getString("last_login").substring(0, rs.getString("last_login").indexOf(".")),
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null;
 
-            LocalDateTime lastLogin = rs.getString("last_login") != null ? LocalDateTime.parse(rs.getString("last_login"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) : null;
+            LocalDateTime updatedAt = rs.getString("updated_at") != null ? updatedAt = LocalDateTime.parse(
+                    rs.getString("updated_at").substring(0, rs.getString("updated_at").indexOf(".")),
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null;
 
-            LocalDateTime updatedAt = rs.getString("updated_at") != null ? updatedAt = LocalDateTime.parse(rs.getString("updated_at"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) : null;
+            LocalDateTime createdAt = rs.getString("created_at") != null ? createdAt = LocalDateTime.parse(
+                    rs.getString("created_at").substring(0, rs.getString("created_at").indexOf(".")),
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null;
 
-            LocalDateTime createdAt = rs.getString("created_at") != null ? createdAt = LocalDateTime.parse(rs.getString("created_at"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) : null;
-
-            // if (rs.getString("last_login") != null) {
-
-            //     lastLogin = LocalDateTime.parse(rs.getString("last_login"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-
-            // }
-
-            // if (rs.getString("updated_at") != null) {
-
-            //     updatedAt = LocalDateTime.parse(rs.getString("updated_at"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-
-            // }
-
-
-            // if (rs.getString("created_at") != null) {
-
-            //     createdAt = LocalDateTime.parse(rs.getString("created_at"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-
-            // }
-
-
-            return new User(
-                UUID.fromString(rs.getString("user_id")),
-                UUID.fromString(rs.getString("profile_id")),
-                rs.getString("username"),
-                rs.getString("password"),
-                rs.getString("email"),
-                rs.getString("remember_me_token"),
-                UUID.fromString(rs.getString("role_id")),
-                lastLogin,
-                createdAt,
-                updatedAt
-            );
+            return new User(UUID.fromString(rs.getString("user_id")), UUID.fromString(rs.getString("profile_id")),
+                    rs.getString("username"), rs.getString("password"), rs.getString("email"),
+                    rs.getString("remember_me_token"), UUID.fromString(rs.getString("role_id")), lastLogin, createdAt,
+                    updatedAt);
         });
 
     }
 
     @Override
     public Optional<Object> read(UUID id) throws Exception {
-        // TODO Auto-generated method stub
-        return null;
+
+        final String sql = "SELECT * FROM users WHERE user_id = ?";
+
+        User user = jdbcTemplate.queryForObject(sql, (rs, i) -> {
+
+            LocalDateTime lastLogin = rs.getString("last_login") != null ? LocalDateTime.parse(
+                    rs.getString("last_login").substring(0, rs.getString("last_login").indexOf(".")),
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null;
+
+            LocalDateTime updatedAt = rs.getString("updated_at") != null ? updatedAt = LocalDateTime.parse(
+                    rs.getString("updated_at").substring(0, rs.getString("updated_at").indexOf(".")),
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null;
+
+            LocalDateTime createdAt = rs.getString("created_at") != null ? createdAt = LocalDateTime.parse(
+                    rs.getString("created_at").substring(0, rs.getString("created_at").indexOf(".")),
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null;
+
+            return new User(UUID.fromString(rs.getString("user_id")), UUID.fromString(rs.getString("profile_id")),
+                    rs.getString("username"), rs.getString("password"), rs.getString("email"),
+                    rs.getString("remember_me_token"), UUID.fromString(rs.getString("role_id")), lastLogin, createdAt,
+                    updatedAt);
+        }, new Object[] { id });
+
+        return Optional.ofNullable(user);
     }
 
     @Override
@@ -102,5 +100,5 @@ public class UserDAO implements DataAccessModel {
         // TODO Auto-generated method stub
         return 0;
     }
-    
+
 }
