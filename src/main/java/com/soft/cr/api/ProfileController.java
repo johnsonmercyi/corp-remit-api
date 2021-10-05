@@ -2,12 +2,11 @@ package com.soft.cr.api;
 
 import java.util.UUID;
 
-import com.soft.cr.model.User;
-import com.soft.cr.service.UserService;
+import com.soft.cr.model.Profile;
+import com.soft.cr.service.ProfileService;
 import com.soft.cr.util.CustomMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,17 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
     // "http://192.168.43.100:3000"
 }, maxAge = 3600)
 
-@RequestMapping("api/coore/v1/user")
+@RequestMapping("api/coore/v1/profile")
 @RestController
-public class UserController {
+public class ProfileController {
     
-    private final UserService service;
+    private ProfileService service;
 
-    /**
-     * @param service
-     */
     @Autowired
-    public UserController(UserService service) {
+    public ProfileController (ProfileService service) {
         this.service = service;
     }
 
@@ -67,11 +63,12 @@ public class UserController {
 			response = service.read(id);
 		}catch (Exception ex) {
             System.out.println(ex.getClass());
+            ex.printStackTrace();
 			
 			if (ex instanceof CannotGetJdbcConnectionException) {
 				response = new CustomMessage(true, "Server Error", "Database Connection Lost", "The Service(s) required by your SQL Database Server to run might not have been started.");
 			} if (ex instanceof EmptyResultDataAccessException) {
-				response = new CustomMessage(true, "Invalid User", "User Credential is Invalid", "");
+				response = new CustomMessage(true, "Invalid Profile", "Profile Credential is Invalid", "");
 			} else {
 				response = new CustomMessage(true, "Server Error", ex.getClass().getSimpleName(), "Not yet resolved!");
 			}
@@ -81,10 +78,10 @@ public class UserController {
 	}
 
     @PostMapping
-    public Object insert (@RequestBody User user) {
+    public Object insert (@RequestBody Profile profile) {
         Object response = 0;
         try {
-            response = service.insert(user);
+            response = service.insert(profile);
         } catch (Exception ex) {
             System.out.println(ex.getClass());
             ex.printStackTrace();
@@ -92,13 +89,8 @@ public class UserController {
 			if (ex instanceof CannotGetJdbcConnectionException) {
 				response = new CustomMessage(true, "Server Error", "Database Connection Lost", "The Service(s) required by your SQL Database Server to run might not have been started.");
 			} if (ex instanceof EmptyResultDataAccessException) {
-				response = new CustomMessage(true, "Invalid User", "User Credential is Invalid", "");
-			} if (ex instanceof DuplicateKeyException) {
-                response = new CustomMessage(true, "Username/Email Taken!", "Please choose a different username/email.", "");
-            } if (ex.getMessage() == "Error creating user!") {
-                response = new CustomMessage(true, "Error Creating User", "User creation was unsuccessfull", "");
-                
-            } else {
+				response = new CustomMessage(true, "Invalid Profile", "Profile Credential is Invalid", "");
+			} else {
 				response = new CustomMessage(true, "Server Error", ex.getClass().getSimpleName(), "Not yet resolved!");
 			}
         }
@@ -106,11 +98,11 @@ public class UserController {
     }
 
     @PutMapping(path="{id}")
-    public Object update (@PathVariable("id") UUID id, @RequestBody User user) {
+    public Object update (@PathVariable("id") UUID id, @RequestBody Profile profile) {
         Object response = 0;
 
         try {
-            response = service.update(id, user);
+            response = service.update(id, profile);
         } catch (Exception ex) {
             System.out.println(ex.getClass());
             ex.printStackTrace();
@@ -118,7 +110,7 @@ public class UserController {
 			if (ex instanceof CannotGetJdbcConnectionException) {
 				response = new CustomMessage(true, "Server Error", "Database Connection Lost", "The Service(s) required by your SQL Database Server to run might not have been started.");
 			} if (ex instanceof EmptyResultDataAccessException) {
-				response = new CustomMessage(true, "Invalid User", "User Credential is Invalid", "");
+				response = new CustomMessage(true, "Invalid Profile", "Profile Credential is Invalid", "");
 			} else {
 				response = new CustomMessage(true, "Server Error", ex.getClass().getSimpleName(), "Not yet resolved!");
 			}
@@ -139,12 +131,13 @@ public class UserController {
 			if (ex instanceof CannotGetJdbcConnectionException) {
 				response = new CustomMessage(true, "Server Error", "Database Connection Lost", "The Service(s) required by your SQL Database Server to run might not have been started.");
 			} if (ex instanceof EmptyResultDataAccessException) {
-				response = new CustomMessage(true, "Invalid User", "User Credential is Invalid", "");
+				response = new CustomMessage(true, "Invalid Profile", "Profile Credential is Invalid", "");
 			} else {
 				response = new CustomMessage(true, "Server Error", ex.getClass().getSimpleName(), "Not yet resolved!");
 			}
         }
         return response;
     }
+
 
 }

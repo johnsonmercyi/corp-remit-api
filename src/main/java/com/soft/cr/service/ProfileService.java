@@ -5,19 +5,19 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.soft.cr.dao.DataAccessModel;
-import com.soft.cr.model.User;
+import com.soft.cr.model.Profile;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
-
-    private final DataAccessModel dao;
+public class ProfileService {
+    
+    private DataAccessModel dao;
 
     @Autowired
-    public UserService (@Qualifier("postgres_user") DataAccessModel dao) {
+    public ProfileService (@Qualifier("postgres_profile") DataAccessModel dao) {
         this.dao = dao;
     }
 
@@ -29,12 +29,16 @@ public class UserService {
         return dao.read(id);
     }
 
-    public int insert (User user) throws Exception {
-        return dao.insert(user);
+    public int insert (Profile profile) throws Exception {
+        return dao.insert(profile);
     }
 
-    public int update (UUID id, User user) throws Exception {
-        return dao.update(id, user);
+    public UUID insertAndReturnId (Profile profile) throws Exception {
+        return dao.insertAndReturnId(profile);
+    }
+
+    public int update (UUID id, Profile profile) throws Exception {
+        return dao.update(id, profile);
     }
 
     public int delete (UUID id) throws Exception {

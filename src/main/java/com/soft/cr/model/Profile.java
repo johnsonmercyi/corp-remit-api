@@ -41,12 +41,12 @@ public class Profile {
      * @param createdAt
      * @param updatedAt
      */
-    public Profile(@JsonProperty("id") UUID id, @JsonProperty("first_name") String firstName, @JsonProperty("last_name") String lastName, @JsonProperty("gender") String gender, @JsonProperty("dob") LocalDate dob, @JsonProperty("nationality") String nationality, @JsonProperty("country_of_residence") String countryOfResidence, @JsonProperty("city") String city, @JsonProperty("address_1") String address1, @JsonProperty("address_2") String address2, @JsonProperty("postal_code") String postalCode, @JsonProperty("mobile") String mobile, @JsonProperty("avarta") String avarta, @JsonProperty("created_at") LocalDateTime createdAt, @JsonProperty("updated_at") LocalDateTime updatedAt) {
+    public Profile(@JsonProperty("id") UUID id, @JsonProperty("first_name") String firstName, @JsonProperty("last_name") String lastName, @JsonProperty("gender") String gender, @JsonProperty("dob") String dob, @JsonProperty("nationality") String nationality, @JsonProperty("country_of_residence") String countryOfResidence, @JsonProperty("city") String city, @JsonProperty("address_1") String address1, @JsonProperty("address_2") String address2, @JsonProperty("postal_code") String postalCode, @JsonProperty("mobile") String mobile, @JsonProperty("avarta") String avarta, @JsonProperty("created_at") LocalDateTime createdAt, @JsonProperty("updated_at") LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
-        this.dob = dob;
+        this.dob = dob != null ? LocalDate.parse(dob) : null;
         this.nationality = nationality;
         this.countryOfResidence = countryOfResidence;
         this.city = city;

@@ -11,6 +11,9 @@ public class User {
     private final UUID profileId;
     private final String username;
     private final String password;
+    private final String firstname;
+    private final String lastname;
+    private final String gender;
     private final String email;
     private final String token;
     private final UUID roleId;
@@ -23,6 +26,9 @@ public class User {
      * @param profileId
      * @param username
      * @param password
+     * @param firstname
+     * @param lastname
+     * @param gender
      * @param email
      * @param token
      * @param roleId
@@ -31,11 +37,14 @@ public class User {
      * @param updatedAt
      */
     public User(@JsonProperty("id") UUID id, 
-    @JsonProperty("profile_id") UUID profileId, @JsonProperty("username") String username, @JsonProperty("password") String password, @JsonProperty("email") String email, @JsonProperty("token") String token, @JsonProperty("role_id") UUID roleId, @JsonProperty("last_login") LocalDateTime lastLogin, @JsonProperty("created_at") LocalDateTime createdAt, @JsonProperty("updated_at") LocalDateTime updatedAt) {
+    @JsonProperty("profile_id") UUID profileId, @JsonProperty("username") String username, @JsonProperty("password") String password, @JsonProperty("firstname") String firstname, @JsonProperty("lastname") String lastname, @JsonProperty("gender") String gender, @JsonProperty("email") String email, @JsonProperty("token") String token, @JsonProperty("role_id") UUID roleId, @JsonProperty("last_login") LocalDateTime lastLogin, @JsonProperty("created_at") LocalDateTime createdAt, @JsonProperty("updated_at") LocalDateTime updatedAt) {
         this.id = id;
         this.profileId = profileId;
         this.username = username;
         this.password = password;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.gender = gender;
         this.email = email;
         this.token = token;
         this.roleId = roleId;
@@ -70,6 +79,27 @@ public class User {
      */
     public String getPassword() {
         return password;
+    }
+
+    /**
+     * @return the firstname
+     */
+    public String getFirstname() {
+        return firstname;
+    }
+
+    /**
+     * @return the lastname
+     */
+    public String getLastname() {
+        return lastname;
+    }
+
+    /**
+     * @return the gender
+     */
+    public String getGender() {
+        return gender;
     }
 
     /**

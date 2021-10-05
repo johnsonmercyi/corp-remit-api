@@ -17,6 +17,15 @@ public interface DataAccessModel {
         return insert(id, object);
     }
 
+    default UUID insertAndReturnId (Object object) throws Exception {
+        UUID id = UUID.randomUUID();
+        int insertedRows = insert(id, object);
+        if (insertedRows > 0) {
+            return id;
+        }
+        return null;
+    }
+
     int update(UUID id, Object object) throws Exception;
 
     int delete(UUID id) throws Exception;
