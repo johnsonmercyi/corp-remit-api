@@ -1,32 +1,7 @@
-CREATE TABLE businesses (
-	business_id				UUID PRIMARY KEY NOT NULL,
-	name					VARCHAR(150) UNIQUE NOT NULL,
-	rc_no					VARCHAR(20) UNIQUE,
-	created_at				TIMESTAMP,
-	updated_at				TIMESTAMP
-);
-
-CREATE TABLE branches (
-	branch_id				UUID PRIMARY KEY NOT NULL,
-	name					VARCHAR(150) UNIQUE NOT NULL,
-	address					VARCHAR(250) NOT NULL,
-	business_id				UUID REFERENCES businesses (business_id) NOT NULL,
-	created_at				TIMESTAMP,
-	updated_at				TIMESTAMP
-);
-
-CREATE TABLE departments (
-	department_id			UUID PRIMARY KEY NOT NULL,
-	name					VARCHAR(150) UNIQUE NOT NULL,
-	branch_id				UUID REFERENCES branches (branch_id) NOT NULL,
-	created_at				TIMESTAMP,
-	updated_at				TIMESTAMP
-);
-
 CREATE TABLE roles (
 	role_id					UUID PRIMARY KEY NOT NULL,
-	"desc"					VARCHAR(150),
-	type					VARCHAR(50),
+	name					VARCHAR(150) NOT NULL,
+	type					VARCHAR(150),
 	created_at				TIMESTAMP,
 	updated_at				TIMESTAMP
 );
@@ -59,6 +34,32 @@ CREATE TABLE users (
 	role_id					UUID REFERENCES roles (role_id),-- role_id isn't filled on user registration. The admin does the assigning.
 	status					int default(1) NOT NULL,
 	last_login				TIMESTAMP,
+	created_at				TIMESTAMP,
+	updated_at				TIMESTAMP
+);
+
+CREATE TABLE businesses (
+	business_id				UUID PRIMARY KEY NOT NULL,
+	user_id					UUID REFERENCES users (user_id) NOT NULL,
+	name					VARCHAR(150) UNIQUE NOT NULL,
+	rc_no					VARCHAR(20) UNIQUE,
+	created_at				TIMESTAMP,
+	updated_at				TIMESTAMP
+);
+
+CREATE TABLE branches (
+	branch_id				UUID PRIMARY KEY NOT NULL,
+	name					VARCHAR(150) UNIQUE NOT NULL,
+	address					VARCHAR(250) NOT NULL,
+	business_id				UUID REFERENCES businesses (business_id) NOT NULL,
+	created_at				TIMESTAMP,
+	updated_at				TIMESTAMP
+);
+
+CREATE TABLE departments (
+	department_id			UUID PRIMARY KEY NOT NULL,
+	name					VARCHAR(150) UNIQUE NOT NULL,
+	branch_id				UUID REFERENCES branches (branch_id) NOT NULL,
 	created_at				TIMESTAMP,
 	updated_at				TIMESTAMP
 );

@@ -70,7 +70,7 @@ public class UserController {
 			
 			if (ex instanceof CannotGetJdbcConnectionException) {
 				response = new CustomMessage(true, "Server Error", "Database Connection Lost", "The Service(s) required by your SQL Database Server to run might not have been started.");
-			} if (ex instanceof EmptyResultDataAccessException) {
+			} else if (ex instanceof EmptyResultDataAccessException) {
 				response = new CustomMessage(true, "Invalid User", "User Credential is Invalid", "");
 			} else {
 				response = new CustomMessage(true, "Server Error", ex.getClass().getSimpleName(), "Not yet resolved!");
@@ -91,11 +91,18 @@ public class UserController {
 			
 			if (ex instanceof CannotGetJdbcConnectionException) {
 				response = new CustomMessage(true, "Server Error", "Database Connection Lost", "The Service(s) required by your SQL Database Server to run might not have been started.");
-			} if (ex instanceof EmptyResultDataAccessException) {
+			} else if (ex instanceof EmptyResultDataAccessException) {
 				response = new CustomMessage(true, "Invalid User", "User Credential is Invalid", "");
-			} if (ex instanceof DuplicateKeyException) {
-                response = new CustomMessage(true, "Username/Email Taken!", "Please choose a different username/email.", "");
-            } if (ex.getMessage() == "Error creating user!") {
+			} else if (ex instanceof DuplicateKeyException) {
+                if (ex.getMessage().contains("username")) {
+                    response = new CustomMessage(true, "Username Taken!", "Please choose a different username", "");
+                } else if (ex.getMessage().contains("email")) {
+                    response = new CustomMessage(true, "Email Exists!", "Please choose a different email or simple log in if you're already registered!", "");
+                } else {
+                    response = new CustomMessage(true, "Username/Email Taken!", "Please choose a different username/email.", "");
+                }
+                
+            } else if (ex.getMessage() == "Error creating user!") {
                 response = new CustomMessage(true, "Error Creating User", "User creation was unsuccessfull", "");
                 
             } else {
@@ -117,9 +124,20 @@ public class UserController {
 			
 			if (ex instanceof CannotGetJdbcConnectionException) {
 				response = new CustomMessage(true, "Server Error", "Database Connection Lost", "The Service(s) required by your SQL Database Server to run might not have been started.");
-			} if (ex instanceof EmptyResultDataAccessException) {
+			} else if (ex instanceof EmptyResultDataAccessException) {
 				response = new CustomMessage(true, "Invalid User", "User Credential is Invalid", "");
-			} else {
+			} else if (ex instanceof DuplicateKeyException) {
+                System.out.println(ex.getMessage());
+                if (ex.getMessage().substring(ex.getMessage().indexOf("Detail: Key"), ex.getMessage().length()-1).contains("username")) {
+                    response = new CustomMessage(true, "Username Taken!", "Please choose a different username", "");
+                } else if (ex.getMessage().substring(ex.getMessage().indexOf("Detail: Key"), ex.getMessage().length()-1).contains("email")) {
+                    response = new CustomMessage(true, "Email Exists!", "Please choose a different email or simple log in if you're already registered!", "");
+                } else {
+                    response = new CustomMessage(true, "Business name/Rc No. Taken!", "Please choose a different business name/rc no.",
+                        "");
+                }
+                
+            } else {
 				response = new CustomMessage(true, "Server Error", ex.getClass().getSimpleName(), "Not yet resolved!");
 			}
         }
@@ -138,7 +156,7 @@ public class UserController {
 			
 			if (ex instanceof CannotGetJdbcConnectionException) {
 				response = new CustomMessage(true, "Server Error", "Database Connection Lost", "The Service(s) required by your SQL Database Server to run might not have been started.");
-			} if (ex instanceof EmptyResultDataAccessException) {
+			} else if (ex instanceof EmptyResultDataAccessException) {
 				response = new CustomMessage(true, "Invalid User", "User Credential is Invalid", "");
 			} else {
 				response = new CustomMessage(true, "Server Error", ex.getClass().getSimpleName(), "Not yet resolved!");

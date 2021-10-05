@@ -7,21 +7,19 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.soft.cr.dao.DataAccessModel;
-import com.soft.cr.model.Role;
+import com.soft.cr.model.Business;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-@Repository("postgres_role")
-public class RoleDAO implements DataAccessModel {
+@Repository("postgres_business")
+public class BusinessDAO implements DataAccessModel {
 
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public RoleDAO (JdbcTemplate jdbcTemplate) {
+    public BusinessDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -33,27 +31,22 @@ public class RoleDAO implements DataAccessModel {
 
     @Override
     public int insert(UUID id, Object object) throws Exception {
-        //Firstly we check that we're not attempting a data duplicate infringement :)
-        boolean isRoleExist = this.isRoleExist((Role)object);
-        if (isRoleExist) throw new DuplicateKeyException("Record already exists.");
-
-        final Role role = (Role) object;
-        final String sql = "INSERT INTO roles VALUES (?,?,?,?,?)";
-
+        Business business = (Business) object;
+        final String sql = "INSERT INTO businesses VALUES (?,?,?,?,?,?)";
         int rowsAffected = jdbcTemplate.update(sql, new Object[]{
             id,
-            role.getName(),
-            role.getType(),
+            business.getUserId(),
+            business.getName(),
+            business.getRcNo(),
             LocalDateTime.now(),
             LocalDateTime.now()
         });
-
         return rowsAffected;
     }
 
     @Override
     public List<Object> read() throws Exception {
-        final String sql = "SELECT * FROM roles;";
+        final String sql = "SELECT * FROM businesses;";
         return jdbcTemplate.query(sql, (rs, i) -> {
 
             LocalDateTime updatedAt = rs.getString("updated_at") != null ? updatedAt = LocalDateTime.parse(
@@ -64,10 +57,11 @@ public class RoleDAO implements DataAccessModel {
                     rs.getString("created_at").substring(0, rs.getString("created_at").indexOf(".")),
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null;
 
-            return new Role(
-                UUID.fromString(rs.getString("role_id")),
+            return new Business(
+                UUID.fromString(rs.getString("business_id")),
+                UUID.fromString(rs.getString("user_id")),
                 rs.getString("name"),
-                rs.getString("type"),
+                rs.getString("rc_no"),
                 createdAt,
                 updatedAt
             );
@@ -76,8 +70,8 @@ public class RoleDAO implements DataAccessModel {
 
     @Override
     public Optional<Object> read(UUID id) throws Exception {
-        final String sql = "SELECT * FROM roles WHERE role_id=?;";
-        Role role = jdbcTemplate.queryForObject(sql, (rs, i) -> {
+        final String sql = "SELECT * FROM businesses WHERE business_id=?;";
+        Business business = jdbcTemplate.queryForObject(sql, (rs, i) -> {
 
             LocalDateTime updatedAt = rs.getString("updated_at") != null ? updatedAt = LocalDateTime.parse(
                     rs.getString("updated_at").substring(0, rs.getString("updated_at").indexOf(".")),
@@ -87,75 +81,53 @@ public class RoleDAO implements DataAccessModel {
                     rs.getString("created_at").substring(0, rs.getString("created_at").indexOf(".")),
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null;
 
-            return new Role(
-                UUID.fromString(rs.getString("role_id")),
+            return new Business(
+                UUID.fromString(rs.getString("business_id")),
+                UUID.fromString(rs.getString("user_id")),
                 rs.getString("name"),
-                rs.getString("type"),
+                rs.getString("rc_no"),
                 createdAt,
                 updatedAt
             );
         }, new Object[]{id});
 
-        return Optional.ofNullable(role);
+        return Optional.ofNullable(business);
     }
 
     @Override
     public int update(UUID id, Object object) throws Exception {
-        Role oldRole = (Role) this.read(id).orElse(null);
-        Role newRole = (Role) object;
-        Role mainRole = null;
+        Business oldBusiness = (Business) this.read(id).orElse(null);
+        Business newBusiness = (Business) object;
+        Business mainBusiness = null;
         int rowsAffected = 0;
 
-        //Meanwhile check that we're not attempting a data duplicate infringement :)
-        boolean isRoleExist = this.isRoleExist(newRole);
-        if (isRoleExist) throw new DuplicateKeyException("Record already exists.");
-
-        if (oldRole == null) {
+        if (oldBusiness == null) {
             rowsAffected = this.insert(id, object);
         } else {
-            mainRole = new Role(
+            mainBusiness = new Business(
                 id,
-                newRole.getName(), 
-                newRole.getType(),
+                null,//we're not updating this column. 
+                newBusiness.getName(), 
+                newBusiness.getRcNo(), 
                 null,//we're not updating this column.
                 LocalDateTime.now()
             );
 
-            final String sql = "UPDATE roles SET "
+            final String sql = "UPDATE businesses SET "
                                 +"name=?, "
-                                +"type=?, "
+                                +"rc_no=?, "
                                 +"updated_at=? "
-                                +"WHERE role_id=?";
+                                +"WHERE business_id=?";
 
             rowsAffected = jdbcTemplate.update(sql, new Object[]{
-                mainRole.getName(),
-                mainRole.getType(),
-                mainRole.getUpdatedAt(),
-                mainRole.getId()
+                mainBusiness.getName(),
+                mainBusiness.getRcNo(),
+                mainBusiness.getUpdatedAt(),
+                mainBusiness.getId()
             });
         }
 
         return rowsAffected;
     }
 
-    private boolean isRoleExist (Role testRole) {
-        final String sql = "SELECT * FROM roles WHERE name=? AND type=?";
-        Role role = null;
-        try {
-            role = jdbcTemplate.queryForObject(sql, (rs, i) -> {
-                return new Role(
-                    null,
-                    rs.getString("name"),
-                    rs.getString("type"),
-                    null,
-                    null
-                );
-            }, new Object[]{testRole.getName(), testRole.getType()});
-        }catch (EmptyResultDataAccessException ex) {
-            
-        }
-
-        return role != null;
-    }
-    
 }

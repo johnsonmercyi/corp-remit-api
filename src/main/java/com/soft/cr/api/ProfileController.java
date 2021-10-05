@@ -67,7 +67,7 @@ public class ProfileController {
 			
 			if (ex instanceof CannotGetJdbcConnectionException) {
 				response = new CustomMessage(true, "Server Error", "Database Connection Lost", "The Service(s) required by your SQL Database Server to run might not have been started.");
-			} if (ex instanceof EmptyResultDataAccessException) {
+			} else if (ex instanceof EmptyResultDataAccessException) {
 				response = new CustomMessage(true, "Invalid Profile", "Profile Credential is Invalid", "");
 			} else {
 				response = new CustomMessage(true, "Server Error", ex.getClass().getSimpleName(), "Not yet resolved!");
@@ -88,7 +88,7 @@ public class ProfileController {
 			
 			if (ex instanceof CannotGetJdbcConnectionException) {
 				response = new CustomMessage(true, "Server Error", "Database Connection Lost", "The Service(s) required by your SQL Database Server to run might not have been started.");
-			} if (ex instanceof EmptyResultDataAccessException) {
+			} else if (ex instanceof EmptyResultDataAccessException) {
 				response = new CustomMessage(true, "Invalid Profile", "Profile Credential is Invalid", "");
 			} else {
 				response = new CustomMessage(true, "Server Error", ex.getClass().getSimpleName(), "Not yet resolved!");
@@ -109,7 +109,7 @@ public class ProfileController {
 			
 			if (ex instanceof CannotGetJdbcConnectionException) {
 				response = new CustomMessage(true, "Server Error", "Database Connection Lost", "The Service(s) required by your SQL Database Server to run might not have been started.");
-			} if (ex instanceof EmptyResultDataAccessException) {
+			} else if (ex instanceof EmptyResultDataAccessException) {
 				response = new CustomMessage(true, "Invalid Profile", "Profile Credential is Invalid", "");
 			} else {
 				response = new CustomMessage(true, "Server Error", ex.getClass().getSimpleName(), "Not yet resolved!");
@@ -130,7 +130,7 @@ public class ProfileController {
 			
 			if (ex instanceof CannotGetJdbcConnectionException) {
 				response = new CustomMessage(true, "Server Error", "Database Connection Lost", "The Service(s) required by your SQL Database Server to run might not have been started.");
-			} if (ex instanceof EmptyResultDataAccessException) {
+			} else if (ex instanceof EmptyResultDataAccessException) {
 				response = new CustomMessage(true, "Invalid Profile", "Profile Credential is Invalid", "");
 			} else {
 				response = new CustomMessage(true, "Server Error", ex.getClass().getSimpleName(), "Not yet resolved!");

@@ -5,25 +5,27 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Role {
-    
+public class Branch {
     private final UUID id;
     private final String name;
-    private final String type;
+    private final String address;
+    private final UUID businessId;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
-    
+
     /**
      * @param id
      * @param name
-     * @param type
+     * @param address
+     * @param businessId
      * @param createdAt
      * @param updatedAt
      */
-    public Role(@JsonProperty("id") UUID id, @JsonProperty("name") String name, @JsonProperty("type") String type, @JsonProperty("created_at") LocalDateTime createdAt, @JsonProperty("updated_at") LocalDateTime updatedAt) {
+    public Branch (@JsonProperty("id") UUID id, @JsonProperty("name") String name, @JsonProperty("address") String address, @JsonProperty("business_id") UUID businessId, @JsonProperty("created_at") LocalDateTime createdAt, @JsonProperty("updated_at") LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
-        this.type = type;
+        this.address = address;
+        this.businessId = businessId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -36,17 +38,24 @@ public class Role {
     }
 
     /**
-     * @return the desc
+     * @return the name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @return the type
+     * @return the address
      */
-    public String getType() {
-        return type;
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+     * @return the businessId
+     */
+    public UUID getBusinessId() {
+        return businessId;
     }
 
     /**
@@ -62,5 +71,7 @@ public class Role {
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
+
+    
 
 }

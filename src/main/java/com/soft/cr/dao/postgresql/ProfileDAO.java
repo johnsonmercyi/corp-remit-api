@@ -121,7 +121,7 @@ public class ProfileDAO implements DataAccessModel {
         if (oldProfile == null) {
             rowsAffected = this.insert(id, object);
         } else {
-            System.out.println("NEW DOB >>>>: " + newProfile.getDob());
+            
             mainProfile = new Profile(
                 id, 
                 
