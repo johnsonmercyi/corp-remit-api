@@ -88,12 +88,12 @@ public class StaffDAO implements DataAccessModel{
     @Override
     public List<Object> read() throws Exception {
         final String sql = "SELECT staff.staff_id, staff.profile_id, staff.branch_id, staff.user_id, staff.role_id, staff.department_id, profiles.first_name, profiles.last_name, profiles.gender, branches.name AS branch, businesses.name AS business, users.username, users.email, roles.name AS role, roles.type AS role_type, departments.name AS department,staff.created_at, staff.updated_at FROM staff "
-        +"INNER JOIN profiles ON staff.profile_id = profiles.profile_id "
-        +"INNER JOIN branches ON staff.branch_id = branches.profile_id "
-        +"INNER JOIN businesses ON branches.business_id = businesses.business_id "
-        +"INNER JOIN users ON staff.user_id = users.user_id "
-        +"INNER JOIN roles ON staff.role_id = roles.role_id "
-        +"INNER JOIN departments ON staff.department_id = departments.department_id;";
+        +"LEFT JOIN profiles ON staff.profile_id = profiles.profile_id "
+        +"LEFT JOIN branches ON staff.branch_id = branches.branch_id "
+        +"LEFT JOIN businesses ON branches.business_id = businesses.business_id "
+        +"LEFT JOIN users ON staff.user_id = users.user_id "
+        +"LEFT JOIN roles ON staff.role_id = roles.role_id "
+        +"LEFT JOIN departments ON staff.department_id = departments.department_id;";
 
         return jdbcTemplate.query(sql, (rs, i) -> {
 
@@ -106,10 +106,10 @@ public class StaffDAO implements DataAccessModel{
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null;
 
             return new Staff(
-                UUID.fromString(rs.getString("user_id")), 
+                UUID.fromString(rs.getString("staff_id")), 
                 UUID.fromString(rs.getString("profile_id")),
                 UUID.fromString(rs.getString("branch_id")),
-                UUID.fromString(rs.getString("user_id")),
+                rs.getString("user_id") != null ? UUID.fromString(rs.getString("user_id")) : null,
                 UUID.fromString(rs.getString("role_id")),
                 UUID.fromString(rs.getString("department_id")),
                 rs.getString("first_name"),
@@ -131,12 +131,12 @@ public class StaffDAO implements DataAccessModel{
     public Optional<Object> read(UUID id) throws Exception {
 
         final String sql = "SELECT staff.staff_id, staff.profile_id, staff.branch_id, staff.user_id, staff.role_id, staff.department_id, profiles.first_name, profiles.last_name, profiles.gender, branches.name AS branch, businesses.name AS business, users.username, users.email, roles.name AS role, roles.type AS role_type, departments.name AS department,staff.created_at, staff.updated_at FROM staff "
-        +"INNER JOIN profiles ON staff.profile_id = profiles.profile_id "
-        +"INNER JOIN branches ON staff.branch_id = branches.profile_id "
-        +"INNER JOIN businesses ON branches.business_id = businesses.business_id "
-        +"INNER JOIN users ON staff.user_id = users.user_id "
-        +"INNER JOIN roles ON staff.role_id = roles.role_id "
-        +"INNER JOIN departments ON staff.department_id = departments.department_id WHERE staff.staff_id=?;";
+        +"LEFT JOIN profiles ON staff.profile_id = profiles.profile_id "
+        +"LEFT JOIN branches ON staff.branch_id = branches.branch_id "
+        +"LEFT JOIN businesses ON branches.business_id = businesses.business_id "
+        +"LEFT JOIN users ON staff.user_id = users.user_id "
+        +"LEFT JOIN roles ON staff.role_id = roles.role_id "
+        +"LEFT JOIN departments ON staff.department_id = departments.department_id WHERE staff.staff_id=?;";
 
         Staff staff = jdbcTemplate.queryForObject(sql, (rs, i) -> {
 
@@ -149,10 +149,10 @@ public class StaffDAO implements DataAccessModel{
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null;
 
             return new Staff(
-                UUID.fromString(rs.getString("user_id")), 
+                UUID.fromString(rs.getString("staff_id")), 
                 UUID.fromString(rs.getString("profile_id")),
                 UUID.fromString(rs.getString("branch_id")),
-                UUID.fromString(rs.getString("user_id")),
+                rs.getString("user_id") != null ? UUID.fromString(rs.getString("user_id")) : null,
                 UUID.fromString(rs.getString("role_id")),
                 UUID.fromString(rs.getString("department_id")),
                 rs.getString("first_name"),
@@ -191,9 +191,9 @@ public class StaffDAO implements DataAccessModel{
 
             mainProfile = new Profile(
                 oldStaff.getProfileId(),
-                newStaff.getFirstname(),
-                newStaff.getLastname(),
-                newStaff.getGender(), 
+                newStaff.getFirstname() == null ? oldStaff.getFirstname() :  newStaff.getFirstname(),
+                newStaff.getLastname() == null ? oldStaff.getLastname() :  newStaff.getLastname(),
+                newStaff.getGender() == null ? oldStaff.getGender() :  newStaff.getGender(), 
                 tempProfile.getDob() != null ? tempProfile.getDob().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null, 
                 tempProfile.getNationality(), 
                 tempProfile.getCountryOfResidence(), 
@@ -214,10 +214,10 @@ public class StaffDAO implements DataAccessModel{
             mainStaff = new Staff(
                 id,
                 oldStaff.getProfileId(), 
-                newStaff.getBranchId(),
-                newStaff.getUserId(),
-                newStaff.getRoleId(),
-                newStaff.getDepartmentId(),
+                newStaff.getBranchId() == null ? oldStaff.getBranchId() : newStaff.getBranchId(),
+                newStaff.getUserId() == null ? oldStaff.getUserId() : newStaff.getUserId(),
+                newStaff.getRoleId() == null ? oldStaff.getRoleId() : newStaff.getRoleId(),
+                newStaff.getDepartmentId() == null ? oldStaff.getDepartmentId() : newStaff.getDepartmentId(),
 
                 null,null,null,null,null,null,null,null,null,null,null,
                 

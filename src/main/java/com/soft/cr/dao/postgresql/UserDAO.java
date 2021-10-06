@@ -187,9 +187,9 @@ public class UserDAO implements DataAccessModel {
 
             mainProfile = new Profile(
                 oldUser.getProfileId(),
-                newUser.getFirstname(),
-                newUser.getLastname(),
-                newUser.getGender(), 
+                newUser.getFirstname() == null ? oldUser.getFirstname() : newUser.getFirstname(),
+                newUser.getLastname() == null ? oldUser.getLastname() : newUser.getLastname(),
+                newUser.getGender() == null ? oldUser.getGender() : newUser.getGender(), 
                 tempProfile.getDob() != null ? tempProfile.getDob().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null, 
                 tempProfile.getNationality(), 
                 tempProfile.getCountryOfResidence(), 
