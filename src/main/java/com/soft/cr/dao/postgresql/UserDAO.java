@@ -111,13 +111,12 @@ public class UserDAO implements DataAccessModel {
     @Override
     public int insert(UUID id, Object object) throws Exception {
         User user = (User) object;// cast this object
-        Profile temp = null;
         UUID profileId = null;
 
-        if (user.getProfileId() != null)//check for existence of record
-            temp = (Profile) profileService.read(user.getProfileId()).orElse(null);
+        // if (user.getProfileId() != null)//check for existence of record
+        //     temp = (Profile) profileService.read(user.getProfileId()).orElse(null);
 
-        if (temp == null) {
+        if (user.getProfileId() == null) {
             //create a profile
             profileId = profileService.insertAndReturnId(new Profile(
                 null, 
@@ -137,7 +136,7 @@ public class UserDAO implements DataAccessModel {
                 LocalDateTime.now()
             ));
         } else {
-            profileId = temp.getId();
+            profileId = user.getProfileId();
         }
 
         if (profileId == null) return 0; //return if a profile wasn't created
