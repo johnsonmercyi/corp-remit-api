@@ -34,3 +34,5 @@ build/
 
 ### Custom ###
 jotter/
+src/resources/db
+src/resources/*.properties
